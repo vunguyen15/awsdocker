@@ -29,3 +29,11 @@ phases:
       # Pushing the Docker image...
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - IMAGE=$REPOSITORY_URI:$IMAGE_TAG
+      - printf '{"ImageURI":"'"$IMAGE"'"}' > imageDetail.json
+
+artifacts:
+  files:
+    - ./imageDetail.json
+    - ./aws/codedeploy/appspec.yaml
+    - ./aws/codedeploy/taskdef.json
+  discard-paths: yes

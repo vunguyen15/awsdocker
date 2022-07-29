@@ -1,97 +1,75 @@
 # AWS-FCJ-Management - Nodejs, Express, MySQL & Handlebars
 
-### Demo
+## Our Application
 
-1. **Homepage**
+### Access The Homepage
+![homepage](./images/homepage.png)
 
-![Homepage](https://github.com/Van-Hoang-Kha/AWS-FCJ-Management/blob/master/images/homepage.png)
+### View an User
+![view-user](./images/viewuser.png)
 
-2. **View User**
+### Add an User
+![add-user](./images/adduser.png)
 
-![Viewuser](https://github.com/Van-Hoang-Kha/AWS-FCJ-Management/blob/master/images/viewuser.png)
+### Edit an User
+![edit-user](./images/edituser.png)
 
-3. **Add User**
+### Delete an User
+![delete-user](./images/deleteuser.png)
 
-![Add user](https://github.com/Van-Hoang-Kha/AWS-FCJ-Management/blob/master/images/adduser.png)
+## Local Deployment
+### Prerequisites
+1. [Docker Engine](https://docs.docker.com/engine/install/)
 
-4. **Edit User**
+### Environment Variables (`./.env`)
 
-![Edituser](https://github.com/Van-Hoang-Kha/AWS-FCJ-Management/blob/master/images/edituser.png)
-
-5. **Delete User**
-
-![Deleteuser](https://github.com/Van-Hoang-Kha/AWS-FCJ-Management/blob/master/images/deleteuser.png)
-
-### How to usage
-1. Git clone repository
-```
-https://github.com/Van-Hoang-Kha/AWS-FCJ-Management
-```
-
-2. Go to folder project
-3. Dependencies Installation
-4. Configuration Server
-5. Restarting Express server
-6. Start our local server
-
-### Dependencies Installation
-```
-npm install express dotenv express-handlebars body-parser mysql
-```
-### Configuration Server
-Create a .env file and add your database credentials like this:
-```
-DB_HOST = 'localhost'
-DB_NAME = 'DB_NAME'
-DB_USER = 'root'
-DB_PASS = 'password'
-```
-### Restarting Express server
-```
-npm install --save-dev nodemon
-```
-
-### Start our local server
+There is an example of `.env` which has the following format to be used with **Docker-Compose**.
 
 ```
-npm start
+DB_HOST=<DOCKER_COMPOSE_SERVICE>
+DB_NAME=<MYSQL_DATABASE>
+DB_USER=<MYSQL_USER>
+DB_PASS=<MYSQL_USER_PASSWORD>
 ```
 
-### SQL Schema
+### Docker Compose (`./docker-compose.yaml`)
+1. Clone this repository with `git clone`.
+2. Bring up and wait for its ready:
+   ```bash
+   docker compose up --build
+   ```
+3. Access your browser with URL `http://localhost:8080`.
+4. Bring down once done:
+   ```bash
+   docker compose down
+   ```
 
-```
-CREATE TABLE `lib'.`user` ( `id` INT NOT NULL AUTO_INCREMENT , `first_name` VARCHAR(45) NOT NULL , `last_name` VARCHAR(45) NOT NULL , `email` VARCHAR(45) NOT NULL , `phone` VARCHAR(45) NOT NULL , `comments` TEXT NOT NULL , `status` VARCHAR(10) NOT NULL DEFAULT 'active' , PRIMARY KEY (`id`)) ENGINE = InnoDB;
-```
-### SQL Dummy Data
+## AWS Deployment
+### Prerequisites
+1. An AWS Account
+2. AWS services deployment
+   - Amazon RDS for MySQL DB
+   - Amazon ECR repository
+   - Amazon ECS Cluster with Fargate
+   - AWS CodeBuild
+   - AWS CodeDeploy
+   - AWS CodePipeline
 
-```
-INSERT INTO `user` 
-(`id`, `first_name`,  `last_name`,    `email`,                 `phone`,         `comments`, `status`) VALUES
-(NULL, 'Amanda',      'Nunes',        'anunes@ufc.com',        '012345 678910', '',          'active'),
-(NULL, 'Alexander',   'Volkanovski',  'avolkanovski@ufc.com',  '012345 678910', '',          'active'),
-(NULL, 'Khabib',      'Nurmagomedov', 'knurmagomedov@ufc.com', '012345 678910', '',          'active'),
-(NULL, 'Kamaru',      'Usman',        'kusman@ufc.com',        '012345 678910', '',          'active'),
-(NULL, 'Israel',      'Adesanya',     'iadesanya@ufc.com',     '012345 678910', '',          'active'),
-(NULL, 'Henry',       'Cejudo',       'hcejudo@ufc.com',       '012345 678910', '',          'active'),
-(NULL, 'Valentina',   'Shevchenko',   'vshevchenko@ufc.com',   '012345 678910', '',          'active'),
-(NULL, 'Tyron',       'Woodley',      'twoodley@ufc.com',      '012345 678910', '',          'active'),
-(NULL, 'Rose',        'Namajunas ',   'rnamajunas@ufc.com',    '012345 678910', '',          'active'),
-(NULL, 'Tony',        'Ferguson ',    'tferguson@ufc.com',     '012345 678910', '',          'active'),
-(NULL, 'Jorge',       'Masvidal ',    'jmasvidal@ufc.com',     '012345 678910', '',          'active'),
-(NULL, 'Nate',        'Diaz ',        'ndiaz@ufc.com',         '012345 678910', '',          'active'),
-(NULL, 'Conor',       'McGregor ',    'cmcGregor@ufc.com',     '012345 678910', '',          'active'),
-(NULL, 'Cris',        'Cyborg ',      'ccyborg@ufc.com',       '012345 678910', '',          'active'),
-(NULL, 'Tecia',       'Torres ',      'ttorres@ufc.com',       '012345 678910', '',          'active'),
-(NULL, 'Ronda',       'Rousey ',      'rrousey@ufc.com',       '012345 678910', '',          'active'),
-(NULL, 'Holly',       'Holm ',        'hholm@ufc.com',         '012345 678910', '',          'active'),
-(NULL, 'Joanna',      'Jedrzejczyk ', 'jjedrzejczyk@ufc.com',  '012345 678910', '',          'active')
-```
+### Amazon RDS for MySQL
+The folder `./aws/rds/` includes:
+- `user.sql`: The preload script that we must prepare inside our **RDS MySQL DB**.
 
-### Reference
-[Nodejs Documents](https://nodejs.org/en/docs/)
+### AWS CodeBuild
+The folder `./aws/codebuild/` includes:
+- `buildspec.yaml`: The build specification that we build our Node application and push to an **Amazon ECR repository**.
 
-[MySQL Documents](https://dev.mysql.com/doc/)
+### AWS CodeDeploy
+This folder `./aws/codedeploy/` includes:
+- `appspec.yaml`: The file is used by **CodeDeploy** to determine our **ECS task definition**.
+- `taskdef.json`: The file includes necessary information for our **ECS task definition** during the creation and **CodeDeploy** process.
 
-[Simple User Management System – Nodejs, Express, MySQL & Handlebars](https://raddy.dev/blog/simple-user-management-system-nodejs-express-mysql-handlebars/)
-
-
+## References
+- [(Official) NodeJS](https://nodejs.org/en/docs/)
+- [(Official) MySQL](https://dev.mysql.com/doc/)
+- [(Blog) Simple User Management System – Nodejs, Express, MySQL & Handlebars](https://raddy.dev/blog/simple-user-management-system-nodejs-express-mysql-handlebars/)
+- [(Blog) How to use MySQL with Docker and Docker compose a beginners guide](https://geshan.com.np/blog/2022/02/mysql-docker-compose/)
